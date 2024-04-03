@@ -16,4 +16,12 @@ module read_mapping:
 
 
 # use all rules from https://github.com/nikostr/read-mapping
-use rule * from read_mapping
+use rule * from read_mapping as read_mapping_*
+
+include: "rules/common.smk"
+include: "rules/calling.smk"
+
+rule all:
+    input:
+        "results/calls/calls.vcf",
+    default_target: True
