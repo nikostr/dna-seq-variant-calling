@@ -1,0 +1,12 @@
+sample_id	datatype	unit	fq1	fq2
+A	illumina	1	.tests/data/illumina.1.fq.gz	.tests/data/illumina.2.fq.gz
+B	illumina	1	.tests/data/illumina.1.fq.gz	.tests/data/illumina.2.fq.gz
+C	illumina	1	.tests/data/illumina.1.fq.gz	
+D	illumina	1	.tests/data/illumina.1.fq.gz	.tests/data/illumina.2.fq.gz
+D	illumina	2	.tests/data/illumina.1.fq.gz	.tests/data/illumina.2.fq.gz
+F	pacbio	1	.tests/data/pacbio.fq.gz
+G	pacbio	1	.tests/data/pacbio.fq.gz
+G	pacbio	2	.tests/data/pacbio.fq.gz
+H	ont	1	.tests/data/ont.fq.gz
+I	ont	1	.tests/data/ont.fq.gz
+I	ont	2	.tests/data/ont.fq.gz
