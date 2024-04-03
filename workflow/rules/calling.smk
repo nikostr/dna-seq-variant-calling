@@ -1,10 +1,10 @@
 rule freebayes:
     input:
-        alns=lambda w: set(read_mapping.get_collect_bams_input(w)),
-        idxs=lambda w: [f + '.bai' for f in read_mapping.get_collect_bams_input(w)],
+        alns=lambda w: set([f for f in read_mapping.get_collect_bams_input(w) if 'illumina' in f]),
+        idxs=lambda w: [f + '.bai' for f in read_mapping.get_collect_bams_input(w) if 'illumina' in f],
         ref=config["genome"],
     output:
-        vcf = "results/calls/calls.vcf",
+        vcf = "results/freebayes/calls.vcf",
     log:
         "results/logs/freebayes/calls.log",
     threads: 16

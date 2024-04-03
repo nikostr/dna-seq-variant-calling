@@ -23,5 +23,5 @@ include: "rules/calling.smk"
 
 rule all:
     input:
-        "results/calls/calls.vcf",
+        rules.freebayes.output,
     default_target: True
