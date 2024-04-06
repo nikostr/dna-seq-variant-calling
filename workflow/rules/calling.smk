@@ -1,4 +1,4 @@
-rule samtools_index:
+rule samtools_faidx:
     input:
         config["genome"],
     output:
@@ -14,7 +14,7 @@ rule freebayes:
         alns=lambda w: set([f for f in read_mapping.get_collect_bams_input(w) if 'illumina' in f]),
         idxs=lambda w: [f + '.bai' for f in read_mapping.get_collect_bams_input(w) if 'illumina' in f],
         ref=config["genome"],
-        ref_idx=rules.samtools_index.output,
+        ref_idx=rules.samtools_faidx.output,
     output:
         vcf = "results/freebayes/calls.vcf",
     log:
