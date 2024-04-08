@@ -23,5 +23,5 @@ include: "rules/calling.smk"
 
 rule all:
     input:
-        rules.freebayes.output,
+        rules.ConcatVCFs.output,
     default_target: True
