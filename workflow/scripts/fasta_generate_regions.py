@@ -1,3 +1,4 @@
+# Adapted from https://github.com/freebayes/freebayes/blob/master/scripts/fasta_generate_regions.py
 from math import ceil
 import os
 
