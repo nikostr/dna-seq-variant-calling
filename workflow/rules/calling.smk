@@ -1,6 +1,3 @@
-import subprocess as sp
-
-
 checkpoint samtools_faidx:
     input:
         config["genome"],
