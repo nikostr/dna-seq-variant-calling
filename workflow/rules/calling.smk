@@ -12,13 +12,13 @@ checkpoint samtools_faidx:
         "v3.7.0/bio/samtools/faidx"
 
 
-rule GenerateFreebayesRegions:
+rule generate_freebayes_regions:
     input:
         ref_idx=rules.samtools_faidx.output,
     output:
         directory("results/freebayes/regions")
     log:
-        "results/logs/freebayes/GenerateFreebayesRegions.log"
+        "results/logs/freebayes/generate_freebayes_regions.log"
     params:
         chunks = config["freebayes"]["chunks"],
     localrule: True
@@ -37,19 +37,19 @@ rule generate_bam_list:
             f.writelines([l + '\n' for l in input.bams])
         
 
-rule VariantCallingFreebayes:
+rule variant_calling_freebayes:
     input:
         bams=lambda w: set([f for f in read_mapping.get_collect_bams_input(w) if 'illumina' in f]),
         index=lambda w: [f + '.bai' for f in read_mapping.get_collect_bams_input(w) if 'illumina' in f],
         ref=config["genome"],
         samples=rules.generate_bam_list.output,
-        all_beds=rules.GenerateFreebayesRegions.output,
+        all_beds=rules.generate_freebayes_regions.output,
     output:
         temp("results/freebayes/variants/vcfs/{chrom}/variants.{i}.vcf")
     params:
         regions="results/freebayes/regions/genome.{chrom}.region.{i}.bed"
     log:
-        "results/logs/freebayes/VariantCallingFreebayes/{chrom}.{i}.log"
+        "results/logs/freebayes/variant_calling_freebayes/{chrom}.{i}.log"
     conda:
         "../envs/freebayes-env.yaml"
     threads: 1
@@ -66,13 +66,13 @@ def concat_vcfs_input(w):
             )
 
 
-rule ConcatVCFs:
+rule concat_vcfs:
     input:
         calls = concat_vcfs_input,
     output:
         vcf = "results/freebayes/calls.vcf",
     log:
-        "results/logs/ConcatVCFs/log.log"
+        "results/logs/concat_vcfs/log.log"
     conda:
         "../envs/freebayes-env.yaml"
     threads: 4
