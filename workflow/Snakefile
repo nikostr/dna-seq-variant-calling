@@ -10,7 +10,7 @@ configfile: "config/config.yaml"
 # declare https://github.com/nikostr/read-mapping as a module
 module read_mapping:
     snakefile: 
-        github("nikostr/read-mapping", path="workflow/Snakefile", tag="v0.2.1")
+        github("nikostr/read-mapping", path="workflow/Snakefile", tag="v0.2.2")
     config:
         config
 
@@ -20,8 +20,22 @@ use rule * from read_mapping as read_mapping_*
 
 include: "rules/common.smk"
 include: "rules/calling.smk"
+include: "rules/qc.smk"
+
+#use rule some_task from other_workflow as other_some_task with:
+#    output:
+#        "results/some-result.txt"
+use rule multiqc from read_mapping as read_mapping_multiqc with:
+    input:
+        read_mapping.get_multiqc_input_from_samtools_stats,
+        read_mapping.get_multiqc_input_from_fastqc,
+        expand(
+            "results/qc/fastp/{s.sample_id}-{s.unit}_fastp.json", s=samples.query('datatype=="illumina"').itertuples()
+        ),
+        rules.bcftools_stats.output,
 
 rule all:
     input:
         rules.concat_vcfs.output,
+        "results/qc/multiqc.html",
     default_target: True
