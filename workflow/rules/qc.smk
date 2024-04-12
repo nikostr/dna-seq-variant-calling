@@ -5,6 +5,8 @@ rule bcftools_stats:
         "results/qc/bcftools_stats/calls.stats.log",
     log:
         "results/logs/bcftools_stats/bcftools_stats.log",
+    params:
+        extra="-s-"
     wrapper:
-        "v3.7.0/bio/bcftools/stats"
+        "master/bio/bcftools/stats"
 
