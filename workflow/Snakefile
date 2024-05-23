@@ -10,7 +10,7 @@ configfile: "config/config.yaml"
 # declare https://github.com/nikostr/read-mapping as a module
 module read_mapping:
     snakefile: 
-        github("nikostr/read-mapping", path="workflow/Snakefile", tag="v0.2.2")
+        github("nikostr/read-mapping", path="workflow/Snakefile", tag="v0.3.0")
     config:
         config
 
