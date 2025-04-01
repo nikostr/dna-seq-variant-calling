@@ -37,6 +37,6 @@ use rule multiqc from read_mapping as read_mapping_multiqc with:
 
 rule all:
     input:
-        rules.concat_vcfs.output,
+        rules.compress_vcf.output,
         "results/qc/multiqc.html",
     default_target: True
