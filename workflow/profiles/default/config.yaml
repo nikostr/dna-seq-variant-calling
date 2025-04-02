@@ -1,0 +1,6 @@
+software-deployment-method: conda
+default-resources:
+  mem_mb: (threads*6400)
+set-resources:
+  delly_genotype:
+    mem: '9GB'

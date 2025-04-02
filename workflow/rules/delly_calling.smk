@@ -47,8 +47,6 @@ rule delly_genotype:
     output:
         genotype="results/delly/genotype/{sample}.bcf",
     conda: "../envs/delly.yaml"
-    resources:
-        mem_mb=9*1024 # See https://github.com/dellytools/delly/issues/172
     shell:
         "delly call "
         "--genome {input.ref} "
