@@ -24,7 +24,7 @@ rule delly_merge:
     input:
         bcfs=expand(
             "results/delly/individual_calls/{sample}.bcf",
-            sample=samples.sample_id
+            sample=samples.sample_id.unique()
         ),
     output:
         sites="results/delly/delly_sites/delly_sites.bcf"
@@ -76,11 +76,11 @@ rule delly_bcftools_merge:
     input:
         calls=expand(
             "results/delly/genotype/{sample}.bcf",
-            sample=samples.sample_id
+            sample=samples.sample_id.unique()
         ),
         idx=expand(
             "results/delly/genotype/{sample}.bcf.csi",
-            sample=samples.sample_id
+            sample=samples.sample_id.unique()
         ),
     output:
         "results/delly/merged_genotype/merged_genotype.bcf",

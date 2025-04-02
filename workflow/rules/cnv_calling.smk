@@ -27,7 +27,7 @@ rule delly_merge_cnvs:
     input:
         bcfs=expand(
             "results/delly/individual_cnv_calls/{sample}.bcf",
-            sample=samples.sample_id
+            sample=samples.sample_id.unique()
         ),
     output:
         sites="results/delly/delly_cnv_sites/delly_sites.bcf"
@@ -86,11 +86,11 @@ rule delly_bcftools_merge_cnv:
     input:
         calls=expand(
             "results/delly/cnv_genotype/{sample}.bcf",
-            sample=samples.sample_id
+            sample=samples.sample_id.unique()
         ),
         idx=expand(
             "results/delly/cnv_genotype/{sample}.bcf.csi",
-            sample=samples.sample_id
+            sample=samples.sample_id.unique()
         ),
     output:
         "results/delly/merged_cnv_genotype/merged_cnv_genotype.unfiltered.bcf",
