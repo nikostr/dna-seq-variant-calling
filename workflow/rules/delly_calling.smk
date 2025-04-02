@@ -14,7 +14,7 @@ rule delly_bcf:
         "results/logs/delly_bcf/{sample}.log",
     threads: 1  # It is best to use as many threads as samples
     wrapper:
-        "v3.3.3/bio/delly"
+        "v5.10.0/bio/delly"
 
 
 
@@ -67,7 +67,7 @@ rule delly_bcftools_index:
     params:
         extra="",  # optional parameters for bcftools index
     wrapper:
-        "v3.3.3/bio/bcftools/index"
+        "v5.10.0/bio/bcftools/index"
 
 
 #     Merge all genotyped samples to get a single VCF/BCF using bcftools merge
@@ -90,7 +90,7 @@ rule delly_bcftools_merge:
         uncompressed_bcf=False,
         extra="",  # optional parameters for bcftools concat (except -o)
     wrapper:
-        "v3.3.3/bio/bcftools/merge"
+        "v5.10.0/bio/bcftools/merge"
 
 
 rule delly_copy_number_segmentation:
