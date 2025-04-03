@@ -66,7 +66,7 @@ rule dicey_mappability:
         bam=rules.map_dicey.output[0],
         bai=rules.samtools_index_temp.output,
     output:
-        temp("results/delly/mappability-map/tmp.fa.gz"),
+        tmp=temp("results/delly/mappability-map/tmp.fa.gz"),
     conda:
         "../envs/dicey.yaml"
     log:
@@ -80,18 +80,24 @@ rule dicey_mappability:
 
 rule convert_mappability_map:
     input:
-        tmpmap=rules.dicey_mappability.output,
+        tmpmap=rules.dicey_mappability.output.tmp,
     output:
         fa="results/delly/mappability-map/map.fa.gz",
         fai="results/delly/mappability-map/map.fa.gz.fai",
         gzi="results/delly/mappability-map/map.fa.gz.gzi",
     params:
-        tmp_in="results/delly/mappability-map/tmp.fa",
-        tmp_out="results/delly/mappability-map/map.fa",
+        tmp_in=lambda w, input: os.path.splitext(input.tmpmap)[0],
+        tmp_out=lambda w, output: os.path.splitext(output.fa)[0],
     conda:
         "../envs/samtools.yaml"
+    log:
+        "results/logs/delly/mappability-map/convert-mappability-map.log",
     shell:
         "gunzip {input} "
+        "2> {log} "
         "&& mv {params.tmp_in} {params.tmp_out} "
+        "2>> {log} "
         "&& bgzip {params.tmp_out} "
+        "2>> {log} "
         "&& samtools faidx {output.fa} "
+        "2>> {log} "
