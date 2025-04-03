@@ -5,20 +5,21 @@ rule dicey_chop:
         r1=temp("results/delly/mappability-map/read1.fq.gz"),
         r2=temp("results/delly/mappability-map/read2.fq.gz"),
     params:
-        lambda w, output: f"--fq1 {output.r1.removesuffix('.fq.gz')} --fq2 {output.r2.removesuffix('.fq.gz')}"
+        lambda w, output: f"--fq1 {output.r1.removesuffix('.fq.gz')} --fq2 {output.r2.removesuffix('.fq.gz')}",
     log:
-        "results/logs/delly/mappability-map/dicey-chop.log"
-    conda: "../envs/dicey.yaml"
+        "results/logs/delly/mappability-map/dicey-chop.log",
+    conda:
+        "../envs/dicey.yaml"
     shell:
-      "dicey chop {params} {input.ref} &> {log}"
+        "dicey chop {params} {input.ref} &> {log}"
 
 
 rule map_dicey:
     input:
-        reads = rules.dicey_chop.output,
-        reference=config['genome'],
+        reads=rules.dicey_chop.output,
+        reference=config["genome"],
         idx=multiext(
-            config['genome'],
+            config["genome"],
             ".0123",
             ".amb",
             ".ann",
@@ -32,7 +33,7 @@ rule map_dicey:
     output:
         temp("results/delly/mappability-map/srt.bam"),
     log:
-        "results/logs/delly/mappability-map/mapping.log"
+        "results/logs/delly/mappability-map/mapping.log",
     params:
         bwa="bwa-meme",
         extra="-M",
@@ -52,7 +53,7 @@ rule samtools_index_temp:
     input:
         rules.map_dicey.output[0],
     output:
-        temp(rules.map_dicey.output[0] + '.bai'),
+        temp(rules.map_dicey.output[0] + ".bai"),
     log:
         "results/logs/samtools_index/dicey.log",
     threads: 8  # This value - 1 will be sent to -@
@@ -62,13 +63,14 @@ rule samtools_index_temp:
 
 rule dicey_mappability:
     input:
-        bam = rules.map_dicey.output[0],
-        bai = rules.samtools_index_temp.output,
+        bam=rules.map_dicey.output[0],
+        bai=rules.samtools_index_temp.output,
     output:
-        temp("results/delly/mappability-map/tmp.fa.gz")
-    conda: "../envs/dicey.yaml"
+        temp("results/delly/mappability-map/tmp.fa.gz"),
+    conda:
+        "../envs/dicey.yaml"
     log:
-        "results/logs/delly/mappability-map/dicey-mappability.log"
+        "results/logs/delly/mappability-map/dicey-mappability.log",
     shell:
         "dicey mappability2 "
         "--outfile {output} "
@@ -86,10 +88,10 @@ rule convert_mappability_map:
     params:
         tmp_in="results/delly/mappability-map/tmp.fa",
         tmp_out="results/delly/mappability-map/map.fa",
-    conda: "../envs/samtools.yaml"
+    conda:
+        "../envs/samtools.yaml"
     shell:
         "gunzip {input} "
         "&& mv {params.tmp_in} {params.tmp_out} "
         "&& bgzip {params.tmp_out} "
         "&& samtools faidx {output.fa} "
-

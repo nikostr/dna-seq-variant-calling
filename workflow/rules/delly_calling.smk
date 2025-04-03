@@ -4,8 +4,20 @@ rule delly_bcf:
     input:
         ref=config["genome"],
         ref_idx=rules.samtools_faidx.output,
-        alns=lambda w: set([f for f in read_mapping.get_collect_bams_input(w) if w.sample + '.bam' in f]),
-        idx=lambda w: set([f + '.bai' for f in read_mapping.get_collect_bams_input(w) if w.sample + '.bam' in f]),
+        alns=lambda w: set(
+            [
+                f
+                for f in read_mapping.get_collect_bams_input(w)
+                if w.sample + ".bam" in f
+            ]
+        ),
+        idx=lambda w: set(
+            [
+                f + ".bai"
+                for f in read_mapping.get_collect_bams_input(w)
+                if w.sample + ".bam" in f
+            ]
+        ),
     output:
         "results/delly/individual_calls/{sample}.bcf",
     params:
@@ -17,23 +29,22 @@ rule delly_bcf:
         "v5.10.0/bio/delly"
 
 
-
 #     Merge SV sites into a unified site list
 # delly merge -o sites.bcf s1.bcf s2.bcf ... sN.bcf
 rule delly_merge:
     input:
         bcfs=expand(
             "results/delly/individual_calls/{sample}.bcf",
-            sample=samples.sample_id.unique()
+            sample=samples.sample_id.unique(),
         ),
     output:
-        sites="results/delly/delly_sites/delly_sites.bcf"
-    conda: "../envs/delly.yaml"
+        sites="results/delly/delly_sites/delly_sites.bcf",
+    conda:
+        "../envs/delly.yaml"
     shell:
         "delly merge "
         "--outfile {output.sites} "
         "{input.bcfs} "
-
 
 
 #     Genotype this merged SV site list across all samples. This can be run in parallel for each sample.
@@ -43,10 +54,17 @@ rule delly_genotype:
     input:
         ref=config["genome"],
         sites=rules.delly_merge.output.sites,
-        alns=lambda w: set([f for f in read_mapping.get_collect_bams_input(w) if w.sample + '.bam' in f]),
+        alns=lambda w: set(
+            [
+                f
+                for f in read_mapping.get_collect_bams_input(w)
+                if w.sample + ".bam" in f
+            ]
+        ),
     output:
         genotype="results/delly/genotype/{sample}.bcf",
-    conda: "../envs/delly.yaml"
+    conda:
+        "../envs/delly.yaml"
     shell:
         "delly call "
         "--genome {input.ref} "
@@ -73,12 +91,11 @@ rule delly_bcftools_index:
 rule delly_bcftools_merge:
     input:
         calls=expand(
-            "results/delly/genotype/{sample}.bcf",
-            sample=samples.sample_id.unique()
+            "results/delly/genotype/{sample}.bcf", sample=samples.sample_id.unique()
         ),
         idx=expand(
             "results/delly/genotype/{sample}.bcf.csi",
-            sample=samples.sample_id.unique()
+            sample=samples.sample_id.unique(),
         ),
     output:
         "results/delly/merged_genotype/merged_genotype.bcf",
@@ -95,13 +112,26 @@ rule delly_copy_number_segmentation:
     input:
         ref=config["genome"],
         ref_idx=rules.samtools_faidx.output,
-        alns=lambda w: set([f for f in read_mapping.get_collect_bams_input(w) if w.sample + '.bam' in f]),
-        idx=lambda w: set([f + '.bai' for f in read_mapping.get_collect_bams_input(w) if w.sample + '.bam' in f]),
+        alns=lambda w: set(
+            [
+                f
+                for f in read_mapping.get_collect_bams_input(w)
+                if w.sample + ".bam" in f
+            ]
+        ),
+        idx=lambda w: set(
+            [
+                f + ".bai"
+                for f in read_mapping.get_collect_bams_input(w)
+                if w.sample + ".bam" in f
+            ]
+        ),
         mappability_map=rules.convert_mappability_map.output.fa,
     output:
         covfile="results/delly/read_depth_profile/{sample}.cov.gz",
         vcf="results/delly/read_depth_profile/{sample}.vcf",
-    conda: "../envs/delly.yaml"
+    conda:
+        "../envs/delly.yaml"
     log:
         "results/logs/read_depth_profile/{sample}.log",
     shell:
@@ -121,7 +151,8 @@ rule segmentation_bed:
         vcf=rules.delly_copy_number_segmentation.output.vcf,
     output:
         bed="results/delly/read_depth_profile/{sample}.bed",
-    conda: "../envs/bcftools.yaml"
+    conda:
+        "../envs/bcftools.yaml"
     log:
         "results/logs/segmentation_bed/{sample}.log",
     shell:

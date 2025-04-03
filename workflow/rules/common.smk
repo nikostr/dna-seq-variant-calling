@@ -10,7 +10,7 @@ import re
 configfile: "config/config.yaml"
 
 
-#validate(config, schema="../schemas/config.schema.yaml")
+# validate(config, schema="../schemas/config.schema.yaml")
 
 samples = pd.read_table(config["samples"], dtype=str).set_index(
     ["sample_id", "datatype", "unit"], drop=False
@@ -18,4 +18,4 @@ samples = pd.read_table(config["samples"], dtype=str).set_index(
 samples.index = samples.index.set_levels(
     [i.astype(str) for i in samples.index.levels]
 )  # enforce str in index
-#validate(samples, schema="../schemas/samples.schema.yaml")
+# validate(samples, schema="../schemas/samples.schema.yaml")
