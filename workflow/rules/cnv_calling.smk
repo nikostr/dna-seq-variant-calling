@@ -5,7 +5,7 @@ rule delly_cnv:
         ref=config["genome"],
         sv_calls=rules.delly_genotype.output.genotype,
         alns=lambda w: set([f for f in read_mapping.get_collect_bams_input(w) if w.sample + '.bam' in f]),
-        mappability_map=config['delly']['mappability_map'],
+        mappability_map=rules.convert_mappability_map.output.fa,
     output:
         genotype="results/delly/individual_cnv_calls/{sample}.bcf",
     conda: "../envs/delly.yaml"
@@ -51,7 +51,7 @@ rule delly_genotype_cnvs:
         ref=config["genome"],
         alns=lambda w: set([f for f in read_mapping.get_collect_bams_input(w) if w.sample + '.bam' in f]),
         sites=rules.delly_merge_cnvs.output.sites,
-        mappability_map=config['delly']['mappability_map'],
+        mappability_map=rules.convert_mappability_map.output.fa,
     output:
         genotype="results/delly/cnv_genotype/{sample}.bcf",
     conda: "../envs/delly.yaml"

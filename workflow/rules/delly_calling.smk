@@ -97,7 +97,7 @@ rule delly_copy_number_segmentation:
         ref_idx=rules.samtools_faidx.output,
         alns=lambda w: set([f for f in read_mapping.get_collect_bams_input(w) if w.sample + '.bam' in f]),
         idx=lambda w: set([f + '.bai' for f in read_mapping.get_collect_bams_input(w) if w.sample + '.bam' in f]),
-        mappability_map=config['delly']['mappability_map'],
+        mappability_map=rules.convert_mappability_map.output.fa,
     output:
         covfile="results/delly/read_depth_profile/{sample}.cov.gz",
         vcf="results/delly/read_depth_profile/{sample}.vcf",

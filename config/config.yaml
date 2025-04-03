@@ -2,5 +2,3 @@ samples: 'config/samples.tsv'
 genome: 'resources/genome.fasta'
 freebayes:
   chunks: 2
-delly:
-  mappability_map: 'resources/mappability-map/map.fa.gz'

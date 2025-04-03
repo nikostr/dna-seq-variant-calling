@@ -21,9 +21,9 @@ use rule * from read_mapping as read_mapping_*
 include: "rules/common.smk"
 include: "rules/calling.smk"
 include: "rules/qc.smk"
+include: "rules/mappability-map.smk"
 include: "rules/delly_calling.smk"
 include: "rules/cnv_calling.smk"
-include: "rules/mappability-map.smk"
 
 #use rule some_task from other_workflow as other_some_task with:
 #    output:
