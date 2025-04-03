@@ -39,12 +39,15 @@ rule delly_merge:
         ),
     output:
         sites="results/delly/delly_sites/delly_sites.bcf",
+    log:
+        "results/logs/delly_merge/delly_merge.log",
     conda:
         "../envs/delly.yaml"
     shell:
         "delly merge "
         "--outfile {output.sites} "
         "{input.bcfs} "
+        "&> {log} "
 
 
 #     Genotype this merged SV site list across all samples. This can be run in parallel for each sample.
@@ -63,6 +66,8 @@ rule delly_genotype:
         ),
     output:
         genotype="results/delly/genotype/{sample}.bcf",
+    log:
+        "results/logs/delly_genotype/{sample}.log",
     conda:
         "../envs/delly.yaml"
     shell:
@@ -71,6 +76,7 @@ rule delly_genotype:
         "--vcffile {input.sites} "
         "--outfile {output.genotype} "
         "{input.alns} "
+        "&> {log} "
 
 
 rule delly_bcftools_index:
@@ -160,3 +166,4 @@ rule segmentation_bed:
         '--format "%CHROM\t%POS\t%INFO/END\t%ID[\t%RDCN]\n" '
         "{input.vcf} "
         "> {output.bed} "
+        "2> {log} "
