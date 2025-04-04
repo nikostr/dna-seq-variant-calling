@@ -101,7 +101,7 @@ rule concat_vcfs:
         "../envs/freebayes-env.yaml"
     threads: 4
     shell:
-        "bcftools concat {input.calls} | vcfuniq > {output} 2> {log}"
+        "bcftools concat {input.calls} 2> {log} | vcfuniq > {output} 2>> {log}"
 
 
 rule compress_vcf:
@@ -128,7 +128,7 @@ rule concat_gvcfs:
         "../envs/freebayes-env.yaml"
     threads: 4
     shell:
-        "bcftools concat {input.calls} | vcfuniq > {output} 2> {log}"
+        "bcftools concat {input.calls} 2> {log} | vcfuniq > {output} 2>> {log}"
 
 
 rule compress_gvcf:
