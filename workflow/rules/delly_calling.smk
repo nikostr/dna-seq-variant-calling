@@ -8,14 +8,14 @@ rule delly_bcf:
             [
                 f
                 for f in read_mapping.get_collect_bams_input(w)
-                if w.sample + ".bam" in f
+                if f"{w.sample}.bam" in f
             ]
         ),
         idx=lambda w: set(
             [
-                f + ".bai"
+                f"{f}.bai"
                 for f in read_mapping.get_collect_bams_input(w)
-                if w.sample + ".bam" in f
+                if f"{w.sample}.bam" in f
             ]
         ),
     output:
@@ -61,7 +61,7 @@ rule delly_genotype:
             [
                 f
                 for f in read_mapping.get_collect_bams_input(w)
-                if w.sample + ".bam" in f
+                if f"{w.sample}.bam" in f
             ]
         ),
     output:
@@ -122,14 +122,14 @@ rule delly_copy_number_segmentation:
             [
                 f
                 for f in read_mapping.get_collect_bams_input(w)
-                if w.sample + ".bam" in f
+                if f"{w.sample}.bam" in f
             ]
         ),
         idx=lambda w: set(
             [
-                f + ".bai"
+                f"{f}.bai"
                 for f in read_mapping.get_collect_bams_input(w)
-                if w.sample + ".bam" in f
+                if f"{w.sample}.bam" in f
             ]
         ),
         mappability_map=rules.convert_mappability_map.output.fa,

@@ -8,7 +8,7 @@ rule delly_cnv:
             [
                 f
                 for f in read_mapping.get_collect_bams_input(w)
-                if w.sample + ".bam" in f
+                if f"{w.sample}.bam" in f
             ]
         ),
         mappability_map=rules.convert_mappability_map.output.fa,
@@ -62,7 +62,7 @@ rule delly_genotype_cnvs:
             [
                 f
                 for f in read_mapping.get_collect_bams_input(w)
-                if w.sample + ".bam" in f
+                if f"{w.sample}.bam" in f
             ]
         ),
         sites=rules.delly_merge_cnvs.output.sites,
