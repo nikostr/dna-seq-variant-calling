@@ -19,3 +19,23 @@ samples.index = samples.index.set_levels(
     [i.astype(str) for i in samples.index.levels]
 )  # enforce str in index
 # validate(samples, schema="../schemas/samples.schema.yaml")
+
+
+def concat_vcfs_input(w):
+    with checkpoints.samtools_faidx.get(**w).output[0].open() as f:
+        chroms = [l.split("\t")[0] for l in f.readlines()]
+    return expand(
+        "results/freebayes/variants/vcfs/{chrom}/variants.{i}.vcf",
+        chrom=chroms,
+        i=range(1, config["freebayes"]["chunks"] + 1),
+    )
+
+
+def concat_gvcfs_input(w):
+    with checkpoints.samtools_faidx.get(**w).output[0].open() as f:
+        chroms = [l.split("\t")[0] for l in f.readlines()]
+    return expand(
+        "results/freebayes/variants/vcfs/{chrom}/variants.{i}.gvcf",
+        chrom=chroms,
+        i=range(1, config["freebayes"]["chunks"] + 1),
+    )

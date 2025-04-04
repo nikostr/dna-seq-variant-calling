@@ -2,7 +2,7 @@ checkpoint samtools_faidx:
     input:
         config["genome"],
     output:
-        config["genome"] + ".fai",
+        f"{config["genome"]}.fai",
     log:
         "results/logs/samtools_faidx/index.log",
     wrapper:
@@ -31,9 +31,11 @@ rule generate_bam_list:
     output:
         temp("results/freebayes/bams.txt"),
     localrule: True
+    log:
+        "results/logs/freebayes/generate_bam_list.log",
     run:
         with open(output[0], "w") as f:
-            f.writelines([l + "\n" for l in input.bams])
+            f.writelines([f"{l}\n" for l in input.bams])
 
 
 rule variant_calling_freebayes:
@@ -42,7 +44,7 @@ rule variant_calling_freebayes:
             [f for f in read_mapping.get_collect_bams_input(w) if "illumina" in f]
         ),
         index=lambda w: [
-            f + ".bai"
+            f"{f}.bai"
             for f in read_mapping.get_collect_bams_input(w)
             if "illumina" in f
         ],
@@ -68,7 +70,7 @@ rule variant_calling_freebayes_gvcf:
             [f for f in read_mapping.get_collect_bams_input(w) if "illumina" in f]
         ),
         index=lambda w: [
-            f + ".bai"
+            f"{f}.bai"
             for f in read_mapping.get_collect_bams_input(w)
             if "illumina" in f
         ],
@@ -86,16 +88,6 @@ rule variant_calling_freebayes_gvcf:
     threads: 1
     shell:
         "freebayes -f {input.ref} -t {params.regions} -L {input.samples} --gvcf > {output} 2> {log}"
-
-
-def concat_vcfs_input(w):
-    with checkpoints.samtools_faidx.get(**w).output[0].open() as f:
-        chroms = [l.split("\t")[0] for l in f.readlines()]
-    return expand(
-        "results/freebayes/variants/vcfs/{chrom}/variants.{i}.vcf",
-        chrom=chroms,
-        i=range(1, config["freebayes"]["chunks"] + 1),
-    )
 
 
 rule concat_vcfs:
@@ -123,16 +115,6 @@ rule compress_vcf:
         extra="--write-index",
     wrapper:
         "v5.10.0/bio/bcftools/view"
-
-
-def concat_gvcfs_input(w):
-    with checkpoints.samtools_faidx.get(**w).output[0].open() as f:
-        chroms = [l.split("\t")[0] for l in f.readlines()]
-    return expand(
-        "results/freebayes/variants/vcfs/{chrom}/variants.{i}.gvcf",
-        chrom=chroms,
-        i=range(1, config["freebayes"]["chunks"] + 1),
-    )
 
 
 rule concat_gvcfs:
