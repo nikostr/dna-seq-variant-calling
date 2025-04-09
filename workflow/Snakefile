@@ -21,14 +21,32 @@ use rule * from read_mapping as read_mapping_*
 
 include: "rules/common.smk"
 include: "rules/calling.smk"
-include: "rules/qc.smk"
 include: "rules/mappability-map.smk"
 include: "rules/delly_calling.smk"
 include: "rules/cnv_calling.smk"
+include: "rules/qc.smk"
 
 
 rule all:
     input:
         rules.compress_vcf.output,
-        "results/qc/multiqc.html",
+        "results/qc/multiqc_freebayes_vcf/multiqc.html",
     default_target: True
+
+
+rule all_freebayes_gvcf:
+    input:
+        rules.compress_gvcf.output,
+        "results/qc/multiqc_freebayes_gvcf/multiqc.html"
+
+
+rule all_delly:
+    input:
+        rules.delly_bcftools_merge.output,
+        "results/qc/multiqc_delly/multiqc.html"
+
+
+rule all_delly_cnv:
+    input:
+        rules.delly_filter_germline_cnvs.output,
+        "results/qc/multiqc_delly_cnv/multiqc.html"
