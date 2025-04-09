@@ -48,5 +48,5 @@ rule all_delly:
 
 rule all_delly_cnv:
     input:
-        rules.delly_filter_germline_cnvs.output,
+        rules.bcftools_view_cnv.output,
         "results/qc/multiqc_delly_cnv/multiqc.html"

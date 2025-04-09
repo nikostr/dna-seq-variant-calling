@@ -13,7 +13,7 @@ rule delly_cnv:
         ),
         mappability_map=rules.convert_mappability_map.output.fa,
     output:
-        genotype="results/delly/individual_cnv_calls/{sample}.bcf",
+        genotype=temp("results/delly/individual_cnv_calls/{sample}.bcf"),
     conda:
         "../envs/delly.yaml"
     log:
@@ -37,7 +37,7 @@ rule delly_merge_cnvs:
             sample=samples.sample_id.unique(),
         ),
     output:
-        sites="results/delly/delly_cnv_sites/delly_sites.bcf",
+        sites=temp("results/delly/delly_cnv_sites/delly_sites.bcf"),
     conda:
         "../envs/delly.yaml"
     log:
@@ -68,7 +68,7 @@ rule delly_genotype_cnvs:
         sites=rules.delly_merge_cnvs.output.sites,
         mappability_map=rules.convert_mappability_map.output.fa,
     output:
-        genotype="results/delly/cnv_genotype/{sample}.bcf",
+        genotype=temp("results/delly/cnv_genotype/{sample}.bcf"),
     conda:
         "../envs/delly.yaml"
     log:
@@ -88,7 +88,7 @@ rule delly_bcftools_cnv_index:
     input:
         rules.delly_genotype_cnvs.output.genotype,
     output:
-        "results/delly/cnv_genotype/{sample}.bcf.csi",
+        temp("results/delly/cnv_genotype/{sample}.bcf.csi"),
     log:
         "results/logs/delly_bcftools_cnv_index/{sample}.log",
     params:
@@ -110,27 +110,13 @@ rule delly_bcftools_merge_cnv:
             sample=samples.sample_id.unique(),
         ),
     output:
-        "results/delly/merged_cnv_genotype/merged_cnv_genotype.unfiltered.bcf",
+        "results/delly/merged_cnv_genotype/merged_cnv_genotype.unfiltered.vcf.gz",
     log:
         "results/logs/delly_bcftools_merge_cnv/delly_bcftools_merge_cnv.log",
     params:
-        uncompressed_bcf=False,
-        extra="",  # optional parameters for bcftools concat (except -o)
+        extra="--write-index",  # optional parameters for bcftools concat (except -o)
     wrapper:
         "v3.3.3/bio/bcftools/merge"
-
-
-rule delly_bcftools_merged_cnv_index:
-    input:
-        rules.delly_bcftools_merge_cnv.output,
-    output:
-        "results/delly/merged_cnv_genotype/merged_cnv_genotype.unfiltered.bcf.csi",
-    log:
-        "results/logs/delly_bcftools_merged_cnv_index/delly_bcftools_merged_cnv_index.log",
-    params:
-        extra="",  # optional parameters for bcftools index
-    wrapper:
-        "v3.3.3/bio/bcftools/index"
 
 
 #    Filter for germline CNVs
@@ -138,9 +124,8 @@ rule delly_bcftools_merged_cnv_index:
 rule delly_filter_germline_cnvs:
     input:
         bcf=rules.delly_bcftools_merge_cnv.output,
-        idx=rules.delly_bcftools_merged_cnv_index.output,
     output:
-        filtered="results/delly/merged_cnv_genotype/merged_cnv_genotype.bcf",
+        filtered=temp("results/delly/merged_cnv_genotype/merged_cnv_genotype.bcf"),
     conda:
         "../envs/delly.yaml"
     log:
@@ -151,3 +136,16 @@ rule delly_filter_germline_cnvs:
         "--outfile {output.filtered} "
         "{input.bcf} "
         "2> {log} "
+
+
+rule bcftools_view_cnv:
+    input:
+        rules.delly_filter_germline_cnvs.output.filtered,
+    output:
+        "results/delly/merged_cnv_genotype/merged_cnv_genotype.vcf.gz",
+    log:
+        "results/logs/delly_filter_germline_cnvs/convert_merged_cnvs.log",
+    params:
+        extra="--write-index",
+    wrapper:
+        "v5.10.0/bio/bcftools/view"

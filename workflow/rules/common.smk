@@ -58,6 +58,6 @@ def get_bcftools_stats_input(caller):
         freebayes_vcf = rules.compress_vcf.output,
         freebayes_gvcf = rules.compress_gvcf.output,
         delly = rules.delly_bcftools_merge.output,
-        delly_cnv = rules.delly_filter_germline_cnvs.output,
+        delly_cnv = rules.bcftools_view_cnv.output,
     )
     return input[caller]
