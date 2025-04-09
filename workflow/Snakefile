@@ -27,21 +27,6 @@ include: "rules/delly_calling.smk"
 include: "rules/cnv_calling.smk"
 
 
-# use rule some_task from other_workflow as other_some_task with:
-#    output:
-#        "results/some-result.txt"
-use rule multiqc from read_mapping as read_mapping_multiqc with:
-    input:
-        read_mapping.get_multiqc_input_from_samtools_stats,
-        read_mapping.get_multiqc_input_from_fastqc,
-        read_mapping.get_multiqc_input_from_deeptools_plotcoverage,
-        expand(
-            "results/qc/fastp/{s.sample_id}-{s.unit}_fastp.json",
-            s=samples.query('datatype=="illumina"').itertuples(),
-        ),
-        rules.bcftools_stats.output,
-
-
 rule all:
     input:
         rules.compress_vcf.output,
