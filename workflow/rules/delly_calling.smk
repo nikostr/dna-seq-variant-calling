@@ -104,12 +104,11 @@ rule delly_bcftools_merge:
             sample=samples.sample_id.unique(),
         ),
     output:
-        "results/delly/merged_genotype/merged_genotype.bcf",
+        "results/delly/merged_genotype/merged_genotype.vcf.gz",
     log:
         "results/logs/delly_bcftools_merge/delly_bcftools_merge.log",
     params:
-        uncompressed_bcf=False,
-        extra="",  # optional parameters for bcftools concat (except -o)
+        extra="--write-index",  # optional parameters for bcftools concat (except -o)
     wrapper:
         "v5.10.0/bio/bcftools/merge"
 
