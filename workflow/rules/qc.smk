@@ -1,11 +1,11 @@
 rule bcftools_stats:
     input:
-        rules.concat_vcfs.output,
+        rules.compress_vcf.output,
     output:
-        "results/qc/bcftools_stats/calls.stats.log",
+        "results/qc/bcftools_stats/freebayes_vcf.stats.log",
     log:
-        "results/logs/bcftools_stats/bcftools_stats.log",
+        "results/logs/bcftools_stats/freebayes_vcf.log",
     params:
-        extra="-s-",
+        extra=lambda w: f"-s- --depth {config['bcftools_stats']['min_depth']},{config['bcftools_stats']['max_depth']},{config['bcftools_stats']['depth_bin']}",
     wrapper:
-        "master/bio/bcftools/stats"
+        "v5.10.0/bio/bcftools/stats"
