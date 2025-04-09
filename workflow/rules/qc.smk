@@ -1,6 +1,6 @@
 rule bcftools_stats:
     input:
-        lambda w: get_bcftools_stats_input(w.caller)
+        lambda w: get_bcftools_stats_input(w.caller),
     output:
         "results/qc/bcftools_stats/{caller}.stats.log",
     log:

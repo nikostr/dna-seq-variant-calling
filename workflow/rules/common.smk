@@ -55,9 +55,9 @@ def get_base_multiqc_input(w):
 
 def get_bcftools_stats_input(caller):
     input = dict(
-        freebayes_vcf = rules.compress_vcf.output,
-        freebayes_gvcf = rules.compress_gvcf.output,
-        delly = rules.delly_bcftools_merge.output,
-        delly_cnv = rules.bcftools_view_cnv.output,
+        freebayes_vcf=rules.compress_vcf.output,
+        freebayes_gvcf=rules.compress_gvcf.output,
+        delly=rules.delly_bcftools_merge.output,
+        delly_cnv=rules.bcftools_view_cnv.output,
     )
     return input[caller]

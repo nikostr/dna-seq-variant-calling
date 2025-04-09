@@ -37,16 +37,16 @@ rule all:
 rule all_freebayes_gvcf:
     input:
         rules.compress_gvcf.output,
-        "results/qc/multiqc_freebayes_gvcf/multiqc.html"
+        "results/qc/multiqc_freebayes_gvcf/multiqc.html",
 
 
 rule all_delly:
     input:
         rules.delly_bcftools_merge.output,
-        "results/qc/multiqc_delly/multiqc.html"
+        "results/qc/multiqc_delly/multiqc.html",
 
 
 rule all_delly_cnv:
     input:
         rules.bcftools_view_cnv.output,
-        "results/qc/multiqc_delly_cnv/multiqc.html"
+        "results/qc/multiqc_delly_cnv/multiqc.html",
