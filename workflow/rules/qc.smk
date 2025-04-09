@@ -16,11 +16,5 @@ rule bcftools_stats:
 #        "results/some-result.txt"
 use rule multiqc from read_mapping as read_mapping_multiqc with:
     input:
-        read_mapping.get_multiqc_input_from_samtools_stats,
-        read_mapping.get_multiqc_input_from_fastqc,
-        read_mapping.get_multiqc_input_from_deeptools_plotcoverage,
-        expand(
-            "results/qc/fastp/{s.sample_id}-{s.unit}_fastp.json",
-            s=samples.query('datatype=="illumina"').itertuples(),
-        ),
+        get_base_multiqc_input,
         rules.bcftools_stats.output,

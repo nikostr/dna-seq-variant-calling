@@ -39,3 +39,15 @@ def concat_gvcfs_input(w):
         chrom=chroms,
         i=range(1, config["freebayes"]["chunks"] + 1),
     )
+
+
+def get_base_multiqc_input(w):
+    return (
+        read_mapping.get_multiqc_input_from_samtools_stats(w)
+        + read_mapping.get_multiqc_input_from_fastqc(w)
+        + read_mapping.get_multiqc_input_from_deeptools_plotcoverage(w)
+        + expand(
+            "results/qc/fastp/{s.sample_id}-{s.unit}_fastp.json",
+            s=samples.query('datatype=="illumina"').itertuples(),
+        )
+    )
