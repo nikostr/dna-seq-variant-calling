@@ -19,7 +19,7 @@ rule delly_bcf:
             ]
         ),
     output:
-        "results/delly/individual_calls/{sample}.bcf",
+        temp("results/delly/individual_calls/{sample}.bcf"),
     params:
         extra="",  # optional parameters for delly (except -g, -x)
     log:
@@ -38,7 +38,7 @@ rule delly_merge:
             sample=samples.sample_id.unique(),
         ),
     output:
-        sites="results/delly/delly_sites/delly_sites.bcf",
+        sites=temp("results/delly/delly_sites/delly_sites.bcf"),
     log:
         "results/logs/delly_merge/delly_merge.log",
     conda:
@@ -65,7 +65,7 @@ rule delly_genotype:
             ]
         ),
     output:
-        genotype="results/delly/genotype/{sample}.bcf",
+        genotype=temp("results/delly/genotype/{sample}.bcf"),
     log:
         "results/logs/delly_genotype/{sample}.log",
     conda:
@@ -83,7 +83,7 @@ rule delly_bcftools_index:
     input:
         rules.delly_genotype.output.genotype,
     output:
-        "results/delly/genotype/{sample}.bcf.csi",
+        temp("results/delly/genotype/{sample}.bcf.csi"),
     log:
         "results/logs/delly_bcftools_index/{sample}.log",
     params:
