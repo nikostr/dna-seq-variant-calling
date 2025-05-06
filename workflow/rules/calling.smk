@@ -65,11 +65,11 @@ rule variant_calling_freebayes:
         samples=rules.generate_bam_list.output,
         all_beds=rules.generate_freebayes_regions.output,
     output:
-        temp("results/freebayes/variants/vcfs/{chrom}/variants.{i}.vcf"),
+        temp("results/freebayes/variants/vcfs/{chrom}/variants.{bp}.vcf"),
     params:
-        region=lambda w: f"{w.chrom}:{w.i}",
+        region=lambda w: f"{w.chrom}:{w.bp}",
     log:
-        "results/logs/freebayes/variant_calling_freebayes/{chrom}.{i}.log",
+        "results/logs/freebayes/variant_calling_freebayes/{chrom}.{bp}.log",
     conda:
         "../envs/freebayes-env.yaml"
     threads: 1
@@ -95,16 +95,21 @@ rule variant_calling_freebayes_gvcf:
         samples=rules.generate_bam_list.output,
         all_beds=rules.generate_freebayes_regions.output,
     output:
-        temp("results/freebayes/variants/vcfs/{chrom}/variants.{i}.gvcf"),
+        temp("results/freebayes/variants/vcfs/{chrom}/variants.{bp}.gvcf"),
     params:
-        regions="results/freebayes/regions/genome.{chrom}.region.{i}.bed",
+        region=lambda w: f"{w.chrom}:{w.bp}",
     log:
-        "results/logs/freebayes/variant_calling_freebayes_gvcf/{chrom}.{i}.log",
+        "results/logs/freebayes/variant_calling_freebayes_gvcf/{chrom}.{bp}.log",
     conda:
         "../envs/freebayes-env.yaml"
     threads: 1
     shell:
-        "freebayes -f {input.ref} -t {params.regions} -L {input.samples} --gvcf > {output} 2> {log}"
+        "freebayes -f {input.ref} "
+        "--region {params.region} "
+        "-L {input.samples} "
+        "--gvcf "
+        "> {output} "
+        "2> {log}"
 
 
 rule concat_vcfs:

@@ -39,13 +39,19 @@ def concat_vcfs_input(w):
 
 
 def concat_gvcfs_input(w):
-    with checkpoints.samtools_faidx.get(**w).output[0].open() as f:
-        chroms = [l.split("\t")[0] for l in f.readlines()]
-    return expand(
-        "results/freebayes/variants/vcfs/{chrom}/variants.{i}.gvcf",
-        chrom=chroms,
-        i=range(1, config["freebayes"]["chunks"] + 1),
-    )
+    with checkpoints.generate_freebayes_regions.get(**w).output[0].open() as f:
+        regions = [
+            r
+            for r in csv.DictReader(
+                f,
+                fieldnames=["chr", "start", "end"],
+                dialect="excel-tab",
+            )
+        ]
+    return [
+        f"results/freebayes/variants/vcfs/{r['chr']}/variants.{r['start']}-{r['end']}.gvcf"
+        for r in regions
+    ]
 
 
 def get_base_multiqc_input(w):
