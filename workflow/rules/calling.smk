@@ -67,7 +67,7 @@ rule variant_calling_freebayes:
     output:
         temp("results/freebayes/variants/vcfs/{chrom}/variants.{i}.vcf"),
     params:
-        region=lambda w: f"{w.chrom}:{w.i}"
+        region=lambda w: f"{w.chrom}:{w.i}",
     log:
         "results/logs/freebayes/variant_calling_freebayes/{chrom}.{i}.log",
     conda:

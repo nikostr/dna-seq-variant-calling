@@ -24,7 +24,14 @@ samples.index = samples.index.set_levels(
 
 def concat_vcfs_input(w):
     with checkpoints.generate_freebayes_regions.get(**w).output[0].open() as f:
-        regions = [r for r in csv.DictReader(f, fieldnames=['chr','start','end'], dialect='excel-tab', )]
+        regions = [
+            r
+            for r in csv.DictReader(
+                f,
+                fieldnames=["chr", "start", "end"],
+                dialect="excel-tab",
+            )
+        ]
     return [
         f"results/freebayes/variants/vcfs/{r['chr']}/variants.{r['start']}-{r['end']}.vcf"
         for r in regions
