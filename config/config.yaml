@@ -2,6 +2,7 @@ samples: 'config/samples.tsv'
 genome: 'resources/genome.fasta'
 freebayes:
   chunks: 2
+  target_data_size: 100000
 bcftools_stats:
   min_depth: 0
   max_depth: 2000
