@@ -74,9 +74,10 @@ rule variant_calling_freebayes:
         "../envs/freebayes-env.yaml"
     threads: 1
     shell:
-        "freebayes -f {input.ref} "
+        "freebayes "
+        "--fasta-reference {input.ref} "
         "--region {params.region} "
-        "-L {input.samples} "
+        "--bam-list {input.samples} "
         "> {output} "
         "2> {log}"
 
@@ -104,9 +105,10 @@ rule variant_calling_freebayes_gvcf:
         "../envs/freebayes-env.yaml"
     threads: 1
     shell:
-        "freebayes -f {input.ref} "
+        "freebayes "
+        "--fasta-reference {input.ref} "
         "--region {params.region} "
-        "-L {input.samples} "
+        "--bam-list {input.samples} "
         "--gvcf "
         "> {output} "
         "2> {log}"
