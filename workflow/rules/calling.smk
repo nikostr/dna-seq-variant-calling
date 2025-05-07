@@ -1,4 +1,4 @@
-checkpoint samtools_faidx:
+rule samtools_faidx:
     input:
         config["genome"],
     output:
