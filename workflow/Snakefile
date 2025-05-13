@@ -34,6 +34,12 @@ rule all:
     default_target: True
 
 
+rule all_bcftools_vcf:
+    input:
+        rules.concat_bcftools_vcfs.output,
+        "results/qc/multiqc_bcftools_vcf/multiqc.html",
+
+
 rule all_freebayes_gvcf:
     input:
         rules.compress_gvcf.output,
