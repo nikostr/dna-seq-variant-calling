@@ -22,6 +22,23 @@ samples.index = samples.index.set_levels(
 # validate(samples, schema="../schemas/samples.schema.yaml")
 
 
+def get_concat_bcftools_vcfs_input(w):
+    with checkpoints.generate_freebayes_regions.get(**w).output[0].open() as f:
+        regions = [
+            r
+            for r in csv.DictReader(
+                f,
+                fieldnames=["chr", "start", "end"],
+                dialect="excel-tab",
+            )
+        ]
+    # Handle bcftools region format by adjusting start values
+    return [
+        f"results/bcftools/calls/vcfs/{r['chr']}/variants.{int(r['start'])+1}-{r['end']}.vcf"
+        for r in regions
+    ]
+
+
 def concat_vcfs_input(w):
     with checkpoints.generate_freebayes_regions.get(**w).output[0].open() as f:
         regions = [

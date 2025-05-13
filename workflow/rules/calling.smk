@@ -51,6 +51,51 @@ checkpoint generate_freebayes_regions:
         "2> {log} "
 
 
+rule variant_calling_bcftools_mpileup:
+    input:
+        alignments=lambda w: set(
+            [f for f in read_mapping.get_collect_bams_input(w) if "illumina" in f]
+        ),
+        ref=config["genome"],
+        index=rules.samtools_faidx.output[0],
+        all_beds=rules.generate_freebayes_regions.output,
+    output:
+        pileup=pipe("results/bcftools/mpileup/vcfs/{chrom}/variants.{bp}.vcf"),
+    params:
+        uncompressed_bcf=True,
+        extra=lambda w: f"--region {w.chrom}:{w.bp}",
+    log:
+        "results/logs/bcftools/mpileup/{chrom}.{bp}.log",
+    wrapper:
+        "v6.1.0/bio/bcftools/mpileup"
+
+
+rule variant_calling_bcftools_call:
+    input:
+        pileup=rules.variant_calling_bcftools_mpileup.output.pileup,
+    output:
+        calls=temp("results/bcftools/calls/vcfs/{chrom}/variants.{bp}.vcf"),
+    params:
+        caller="-m",
+    log:
+        "results/logs/bcftools/call/{chrom}.{bp}.log",
+    wrapper:
+        "v6.1.0/bio/bcftools/call"
+
+
+rule concat_bcftools_vcfs:
+    input:
+        calls=get_concat_bcftools_vcfs_input,
+    output:
+        "results/bcftools/calls.vcf.gz"
+    params:
+        extra="--write-index",
+    log:
+        "results/logs/bcftools/concat/out.log",
+    wrapper:
+        "v6.1.0/bio/bcftools/concat"
+
+
 rule variant_calling_freebayes:
     input:
         bams=lambda w: set(
