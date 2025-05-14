@@ -85,15 +85,30 @@ rule variant_calling_bcftools_call:
 
 rule concat_bcftools_vcfs:
     input:
-        calls=get_concat_bcftools_vcfs_input,
+        vcfs=get_concat_bcftools_vcfs_input,
     output:
-        "results/bcftools/calls.vcf.gz"
+        temp("results/bcftools/calls.unnormalized.vcf"),
+        temp("results/bcftools/calls.unnormalized.vcf.idx"),
     params:
-        extra="--write-index",
+        extra="",
     log:
-        "results/logs/bcftools/concat/out.log",
+        "results/logs/bcftools/picard-merge/out.log",
     wrapper:
-        "v6.1.0/bio/bcftools/concat"
+        "v6.1.0/bio/picard/mergevcfs"
+
+
+rule norm_bcftools_vcf:
+    input:
+        rules.concat_bcftools_vcfs.output[0],
+        ref=config["genome"],
+    output:
+        "results/bcftools/calls.vcf.gz",
+    log:
+        "results/logs/bcftools/norm/out.log",
+    params:
+        extra="--write-index --multiallelics +any",
+    wrapper:
+        "v6.1.0/bio/bcftools/norm"
 
 
 rule variant_calling_freebayes:
