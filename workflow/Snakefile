@@ -36,7 +36,7 @@ rule all:
 
 rule all_bcftools_vcf:
     input:
-        rules.norm_bcftools_vcf.output,
+        rules.fill_bcftools_vcf_tags.output,
         "results/qc/multiqc_bcftools_vcf/multiqc.html",
 
 

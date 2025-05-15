@@ -102,13 +102,34 @@ rule norm_bcftools_vcf:
         rules.concat_bcftools_vcfs.output[0],
         ref=config["genome"],
     output:
-        "results/bcftools/calls.vcf.gz",
+        temp("results/bcftools/calls.normalized.vcf.gz"),
     log:
         "results/logs/bcftools/norm/out.log",
     params:
-        extra="--write-index --multiallelics +any",
+        extra="--multiallelics +any",
     wrapper:
         "v6.1.0/bio/bcftools/norm"
+
+
+rule fill_bcftools_vcf_tags:
+    input:
+        rules.norm_bcftools_vcf.output[0],
+    output:
+        "results/bcftools/calls.vcf.gz",
+    log:
+        "results/logs/bcftools/fill-tags/out.log",
+    conda:
+        "../envs/bcftools.yaml"
+    shell:
+        "bcftools +fill-tags "
+        "{input} "
+        "--output-type z "
+        "--write-index "
+        "--threads {threads} "
+        "--output {output} "
+        "-- "
+        "--tags AN,AC "
+        "2> {log} "
 
 
 rule variant_calling_freebayes:
