@@ -6,7 +6,7 @@ rule bcftools_stats:
     log:
         "results/logs/bcftools_stats/{caller}.log",
     params:
-        extra=lambda w: f"-s- --depth {config['bcftools_stats']['min_depth']},{config['bcftools_stats']['max_depth']},{config['bcftools_stats']['depth_bin']}",
+        extra=lambda w: f"-s- --depth {config['bcftools']['stats']['min_depth']},{config['bcftools']['stats']['max_depth']},{config['bcftools']['stats']['depth_bin']}",
     wrapper:
         "v5.10.0/bio/bcftools/stats"
 

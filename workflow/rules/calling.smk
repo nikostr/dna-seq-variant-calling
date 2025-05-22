@@ -63,7 +63,7 @@ rule variant_calling_bcftools_mpileup:
         pileup=pipe("results/bcftools/mpileup/vcfs/{chrom}/variants.{bp}.vcf"),
     params:
         uncompressed_bcf=True,
-        extra=lambda w: f"--region {w.chrom}:{w.bp}",
+        extra=lambda w: f"--region {w.chrom}:{w.bp} {config['bcftools']['mpileup']['extra']}",
     log:
         "results/logs/bcftools/mpileup/{chrom}.{bp}.log",
     wrapper:
@@ -77,6 +77,7 @@ rule variant_calling_bcftools_call:
         calls=temp("results/bcftools/calls/vcfs/{chrom}/variants.{bp}.vcf"),
     params:
         caller="-m",
+        extra=config["bcftools"]["call"]["extra"],
     log:
         "results/logs/bcftools/call/{chrom}.{bp}.log",
     wrapper:

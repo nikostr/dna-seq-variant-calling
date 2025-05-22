@@ -4,7 +4,12 @@ freebayes:
   target_data_size: 100000
   ploidy_file: ''
   extra: '--standard-filters --use-best-n-alleles 4 --skip-coverage 200 --min-coverage 3'
-bcftools_stats:
-  min_depth: 0
-  max_depth: 2000
-  depth_bin: 1
+bcftools:
+  stats:
+    min_depth: 0
+    max_depth: 2000
+    depth_bin: 1
+  mpileup:
+    extra: ''
+  call:
+    extra: '--variants-only'
