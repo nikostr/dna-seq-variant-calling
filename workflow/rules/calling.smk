@@ -150,6 +150,7 @@ rule variant_calling_freebayes:
     params:
         region=lambda w: f"{w.chrom}:{w.bp}",
         ploidy=lambda w: f"--cnv-map {config['freebayes']['ploidy_file']}" if config['freebayes']['ploidy_file'] else "",
+        extra=config["freebayes"]["extra"],
     log:
         "results/logs/freebayes/variant_calling_freebayes/{chrom}.{bp}.log",
     conda:
@@ -161,6 +162,7 @@ rule variant_calling_freebayes:
         "--region {params.region} "
         "--bam-list {input.samples} "
         "{params.ploidy} "
+        "{params.extra} "
         "> {output} "
         "2> {log}"
 
@@ -183,6 +185,7 @@ rule variant_calling_freebayes_gvcf:
     params:
         region=lambda w: f"{w.chrom}:{w.bp}",
         ploidy=lambda w: f"--cnv-map {config['freebayes']['ploidy_file']}" if config['freebayes']['ploidy_file'] else "",
+        extra=config["freebayes"]["extra"],
     log:
         "results/logs/freebayes/variant_calling_freebayes_gvcf/{chrom}.{bp}.log",
     conda:
@@ -195,6 +198,7 @@ rule variant_calling_freebayes_gvcf:
         "--bam-list {input.samples} "
         "--gvcf "
         "{params.ploidy} "
+        "{params.extra} "
         "> {output} "
         "2> {log}"
 
