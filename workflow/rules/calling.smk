@@ -146,6 +146,7 @@ rule variant_calling_freebayes:
         ref=config["genome"],
         samples=rules.generate_bam_list.output,
         all_beds=rules.generate_freebayes_regions.output,
+        ploidy=config['freebayes']['ploidy_file'] if config['freebayes']['ploidy_file'] else [],
     output:
         temp("results/freebayes/variants/vcfs/{chrom}/variants.{bp}.vcf"),
     params:
@@ -181,6 +182,7 @@ rule variant_calling_freebayes_gvcf:
         ref=config["genome"],
         samples=rules.generate_bam_list.output,
         all_beds=rules.generate_freebayes_regions.output,
+        ploidy=config['freebayes']['ploidy_file'] if config['freebayes']['ploidy_file'] else [],
     output:
         temp("results/freebayes/variants/vcfs/{chrom}/variants.{bp}.gvcf"),
     params:
