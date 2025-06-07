@@ -66,6 +66,7 @@ rule variant_calling_bcftools_mpileup:
         extra=lambda w: f"--region {w.chrom}:{w.bp} {config['bcftools']['mpileup']['extra']}",
     log:
         "results/logs/bcftools/mpileup/{chrom}.{bp}.log",
+    shadow: "shallow"
     wrapper:
         "v6.1.0/bio/bcftools/mpileup"
 
@@ -80,6 +81,7 @@ rule variant_calling_bcftools_call:
         extra=config["bcftools"]["call"]["extra"],
     log:
         "results/logs/bcftools/call/{chrom}.{bp}.log",
+    shadow: "shallow"
     wrapper:
         "v6.1.0/bio/bcftools/call"
 
@@ -158,6 +160,7 @@ rule variant_calling_freebayes:
     conda:
         "../envs/freebayes-env.yaml"
     threads: 1
+    shadow: "shallow"
     shell:
         "freebayes "
         "--fasta-reference {input.ref} "
@@ -194,6 +197,7 @@ rule variant_calling_freebayes_gvcf:
     conda:
         "../envs/freebayes-env.yaml"
     threads: 1
+    shadow: "shallow"
     shell:
         "freebayes "
         "--fasta-reference {input.ref} "
